@@ -84,10 +84,12 @@ const fruit = [
 ];
 
 function search(str) {
-  let results = [];
-  const currStr = str.toLowerCase();
-  console.log("search str = " + currStr);
-  results.push(fruit.filter((fruit) => fruit.includes(currStr)));
+  const capital = (str) =>
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  console.log(capital(str));
+  let results = fruit.filter(
+    (fruit) => fruit.includes(str.toLowerCase()) || fruit.includes(capital(str))
+  );
   return results;
 }
 
@@ -97,7 +99,6 @@ function searchHandler(e) {
   let resultArr = [];
   if (barInput !== "") {
     resultArr = search(barInput);
-    console.log("result array = " + resultArr);
   }
   showSuggestions(resultArr, barInput);
 }
@@ -105,13 +106,23 @@ function searchHandler(e) {
 function showSuggestions(resultArr, inputVal) {
   suggestions.innerHTML = "";
   console.log(resultArr);
-  for (let i = 0; i < resultArr.length; i++) {
-    console.log(i);
+  if (resultArr.length === 0) {
+    suggestions.innerHTML = "";
+    suggestions.classList.remove("has-suggestions");
+  } else {
+    for (let i = 0; i < resultArr.length; i++) {
+      console.log(resultArr[i]);
+      suggestions.innerHTML += `<li>${resultArr[i]}</li>`;
+    }
+    suggestions.classList.add("has-suggestions");
   }
 }
 
 function useSuggestion(e) {
-  // TODO
+  input.value = e.target.innerText;
+  input.focus();
+  suggestions.innerHTML = "";
+  suggestions.classList.remove("has-suggestions");
 }
 
 input.addEventListener("keyup", searchHandler);
